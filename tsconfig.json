@@ -10,7 +10,7 @@
     "strict": true,
     "moduleResolution": "node",
     "esModuleInterop": true,
-    "types": ["jest"]
+    "types": ["jest", "styled-components-react-native"]
   },
   "include": ["src/**/*", "jest-setup.ts"]
 }
