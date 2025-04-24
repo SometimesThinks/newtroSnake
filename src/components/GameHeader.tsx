@@ -4,9 +4,9 @@ import styled from 'styled-components/native';
 const GameHeader = () => {
   return (
     <Container>
+      <HeaderText>Round: 1</HeaderText>
       <HeaderText>Score: 0</HeaderText>
       <HeaderText>Time: 00:00</HeaderText>
-      <HeaderText>Round: 1</HeaderText>
     </Container>
   );
 };

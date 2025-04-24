@@ -1,13 +1,13 @@
 import React from 'react';
 import styled from 'styled-components/native';
-import { useNavigation } from '@react-navigation/native';
 import GameHeader from '../components/GameHeader';
+import GameBody from '../components/GameBody';
 
 const GameScreen = () => {
   return (
     <Container>
       <GameHeader />
-      <Text>Game Screen</Text>
+      <GameBody />
     </Container>
   );
 };
