@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useState, useEffect } from 'react';
 import styled from 'styled-components/native';
 
 const BOARD_WIDTH = 20;
@@ -26,8 +27,7 @@ const GameBody = () => {
 };
 
 const Board = styled.View`
-  background-color: #eaeaea;
-  padding: 4px;
+  flex: 1;
 `;
 
 const Row = styled.View`
