@@ -19,6 +19,7 @@ const Container = styled.Pressable`
   width: 80%;
   height: 50px;
   background-color: #007bff;
+  margin-bottom: 20px;
 `;
 
 const Title = styled.Text`

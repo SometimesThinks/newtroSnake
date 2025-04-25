@@ -1,13 +1,20 @@
 import React from 'react';
+import { useState } from 'react';
 import styled from 'styled-components/native';
 import GameHeader from '../components/GameHeader';
+import GameInput from '../components/GameInput';
 import GameBody from '../components/GameBody';
 
 const GameScreen = () => {
+  const [direction, setDirection] = React.useState<
+    'UP' | 'DOWN' | 'LEFT' | 'RIGHT'
+  >('RIGHT');
+
   return (
     <Container>
       <GameHeader />
-      <GameBody />
+      <GameBody direction={direction} />
+      <GameInput onSwipe={(dir) => setDirection(dir)} />
     </Container>
   );
 };
