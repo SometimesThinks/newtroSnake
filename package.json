@@ -34,6 +34,7 @@
     "@react-native/typescript-config": "0.76.0",
     "@testing-library/jest-native": "^5.4.3",
     "@testing-library/react-native": "^12.8.0",
+    "@trivago/prettier-plugin-sort-imports": "^5.2.2",
     "@types/jest": "^29.5.14",
     "@types/react": "^18.2.6",
     "@types/react-test-renderer": "^18.0.0",
