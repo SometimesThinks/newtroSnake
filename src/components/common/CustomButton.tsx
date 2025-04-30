@@ -7,7 +7,7 @@ interface CustomBtnProps {
   onPress: () => void;
 }
 
-const CustomBtn = ({ title, onPress }: CustomBtnProps) => {
+const CustomButton = ({ title, onPress }: CustomBtnProps) => {
   return (
     <Container onPress={onPress}>
       <Title>{title}</Title>
@@ -29,4 +29,4 @@ const Title = styled.Text`
   line-height: 50px;
 `;
 
-export default CustomBtn;
+export default CustomButton;

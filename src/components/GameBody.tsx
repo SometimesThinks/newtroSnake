@@ -2,24 +2,45 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import styled from 'styled-components/native';
 
-const BOARD_WIDTH = 30;
-const BOARD_HEIGHT = 50;
+const BOARD_WIDTH = 20;
+const BOARD_HEIGHT = 40;
+const generateRandomApple = (): [number, number] => {
+  return [
+    Math.floor(Math.random() * BOARD_WIDTH),
+    Math.floor(Math.random() * BOARD_HEIGHT),
+  ];
+};
 
 interface GameBodyProps {
+  onGameOver: () => void;
   direction: 'UP' | 'DOWN' | 'LEFT' | 'RIGHT';
 }
 
-const GameBody = ({ direction }: GameBodyProps) => {
+const GameBody = ({ onGameOver, direction }: GameBodyProps) => {
   const [snake, setSnake] = useState<[number, number][]>([[5, 5]]);
-  // const [apple, setApple] = useState<[number, number]>(generateRandomApple());
-  const [apple, setApple] = useState<[number, number]>([8, 5]);
+  const [apple, setApple] = useState<[number, number]>(generateRandomApple());
 
-  function generateRandomApple(): [number, number] {
-    return [
-      Math.floor(Math.random() * BOARD_WIDTH),
-      Math.floor(Math.random() * BOARD_HEIGHT),
-    ];
-  }
+  const checkCollision = (head: [number, number]) => {
+    const [headX, headY] = head;
+    // 벽과 충돌 체크
+    if (
+      headX < 0 ||
+      headX >= BOARD_WIDTH ||
+      headY < 0 ||
+      headY >= BOARD_HEIGHT
+    ) {
+      onGameOver();
+      return true;
+    }
+    // 몸통과 충돌 체크
+    for (let i = 1; i < snake.length; i++) {
+      if (headX === snake[i][0] && headY === snake[i][1]) {
+        onGameOver();
+        return true;
+      }
+    }
+    return false;
+  };
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -40,6 +61,12 @@ const GameBody = ({ direction }: GameBodyProps) => {
           case 'RIGHT':
             newHead = [headX + 1, headY];
             break;
+        }
+
+        // 충돌 체크
+        if (checkCollision(newHead)) {
+          clearInterval(interval);
+          return prevSnake; // 게임 오버 시 현재 상태 유지
         }
 
         const ateApple = newHead[0] === apple[0] && newHead[1] === apple[1];

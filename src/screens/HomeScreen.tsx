@@ -3,7 +3,7 @@ import styled from 'styled-components/native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import GameTitle from '../components/GameTitle';
-import CustomBtn from '../components/common/CustomBtn';
+import CustomButton from '../components/common/CustomButton';
 import { RootStackParamList } from '../types/navigation';
 
 const HomeScreen = () => {
@@ -12,8 +12,8 @@ const HomeScreen = () => {
   return (
     <Container>
       <GameTitle />
-      <CustomBtn title='START' onPress={() => navigation.navigate('Game')} />
-      <CustomBtn
+      <CustomButton title='START' onPress={() => navigation.navigate('Game')} />
+      <CustomButton
         title='SETTING'
         onPress={() => navigation.navigate('Setting')}
       />

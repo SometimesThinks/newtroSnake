@@ -4,17 +4,24 @@ import styled from 'styled-components/native';
 import GameHeader from '../components/GameHeader';
 import GameInput from '../components/GameInput';
 import GameBody from '../components/GameBody';
+import FailModal from '../components/FailModal';
 
 const GameScreen = () => {
+  const [isGameOver, setIsGameOver] = useState<boolean>(false);
   const [direction, setDirection] = React.useState<
     'UP' | 'DOWN' | 'LEFT' | 'RIGHT'
   >('RIGHT');
 
+  const handleGameOver = () => {
+    setIsGameOver(() => true);
+  };
+
   return (
     <Container>
       <GameHeader />
-      <GameBody direction={direction} />
+      <GameBody onGameOver={handleGameOver} direction={direction} />
       <GameInput onSwipe={(dir) => setDirection(dir)} />
+      <FailModal isOpen={isGameOver} />
     </Container>
   );
 };
