@@ -1,5 +1,4 @@
-import React from 'react';
-import { useState } from 'react';
+import React, { useState } from 'react';
 
 import styled from 'styled-components/native';
 
@@ -13,15 +12,25 @@ const GameScreen = () => {
   const [direction, setDirection] = React.useState<
     'UP' | 'DOWN' | 'LEFT' | 'RIGHT'
   >('RIGHT');
+  const [resetKey, setResetKey] = useState<number>(0);
 
   const handleGameOver = () => setIsGameOver(true);
+  const retryGame = () => {
+    setIsGameOver(false);
+    setDirection('RIGHT');
+    setResetKey((prev) => prev + 1);
+  };
 
   return (
     <Container>
       <GameHeader />
-      <GameBody onGameOver={handleGameOver} direction={direction} />
+      <GameBody
+        key={resetKey}
+        onGameOver={handleGameOver}
+        direction={direction}
+      />
       <GameInput onSwipe={(dir) => setDirection(dir)} />
-      <FailModal isOpen={isGameOver} />
+      <FailModal onRetry={retryGame} isOpen={isGameOver} />
     </Container>
   );
 };
