@@ -14,7 +14,19 @@ const GameScreen = () => {
   >('RIGHT');
   const [resetKey, setResetKey] = useState<number>(0);
 
-  const handleGameOver = () => setIsGameOver(true);
+  // 방향 전환 함수
+  const handleDirection = (newDir: 'UP' | 'DOWN' | 'LEFT' | 'RIGHT') => {
+    if (
+      (direction === 'UP' && newDir !== 'DOWN') ||
+      (direction === 'DOWN' && newDir !== 'UP') ||
+      (direction === 'LEFT' && newDir !== 'RIGHT') ||
+      (direction === 'RIGHT' && newDir !== 'LEFT')
+    ) {
+      setDirection(newDir);
+    }
+  };
+
+  // 게임 재시작 함수
   const retryGame = () => {
     setIsGameOver(false);
     setDirection('RIGHT');
@@ -26,10 +38,10 @@ const GameScreen = () => {
       <GameHeader />
       <GameBody
         key={resetKey}
-        onGameOver={handleGameOver}
+        onGameOver={() => setIsGameOver(true)}
         direction={direction}
       />
-      <GameInput onSwipe={(dir) => setDirection(dir)} />
+      <GameInput onSwipe={handleDirection} />
       <FailModal onRetry={retryGame} isOpen={isGameOver} />
     </Container>
   );
