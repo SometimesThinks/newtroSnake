@@ -1,10 +1,12 @@
 import React from 'react';
 import { useState } from 'react';
+
 import styled from 'styled-components/native';
+
+import FailModal from '../components/FailModal';
+import GameBody from '../components/GameBody';
 import GameHeader from '../components/GameHeader';
 import GameInput from '../components/GameInput';
-import GameBody from '../components/GameBody';
-import FailModal from '../components/FailModal';
 
 const GameScreen = () => {
   const [isGameOver, setIsGameOver] = useState<boolean>(false);
@@ -12,9 +14,7 @@ const GameScreen = () => {
     'UP' | 'DOWN' | 'LEFT' | 'RIGHT'
   >('RIGHT');
 
-  const handleGameOver = () => {
-    setIsGameOver(() => true);
-  };
+  const handleGameOver = () => setIsGameOver(true);
 
   return (
     <Container>

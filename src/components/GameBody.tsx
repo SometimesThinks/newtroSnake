@@ -19,6 +19,7 @@ interface GameBodyProps {
 const GameBody = ({ onGameOver, direction }: GameBodyProps) => {
   const [snake, setSnake] = useState<[number, number][]>([[5, 5]]);
   const [apple, setApple] = useState<[number, number]>(generateRandomApple());
+  const [gameOverFlag, setGameOverFlag] = useState<boolean>(false);
 
   const checkCollision = (head: [number, number]) => {
     const [headX, headY] = head;
@@ -29,13 +30,13 @@ const GameBody = ({ onGameOver, direction }: GameBodyProps) => {
       headY < 0 ||
       headY >= BOARD_HEIGHT
     ) {
-      onGameOver();
+      setGameOverFlag(true);
       return true;
     }
     // 몸통과 충돌 체크
     for (let i = 1; i < snake.length; i++) {
       if (headX === snake[i][0] && headY === snake[i][1]) {
-        onGameOver();
+        setGameOverFlag(true);
         return true;
       }
     }
@@ -63,25 +64,30 @@ const GameBody = ({ onGameOver, direction }: GameBodyProps) => {
             break;
         }
 
-        // 충돌 체크
         if (checkCollision(newHead)) {
           clearInterval(interval);
-          return prevSnake; // 게임 오버 시 현재 상태 유지
+          return prevSnake;
         }
 
         const ateApple = newHead[0] === apple[0] && newHead[1] === apple[1];
 
         if (ateApple) {
-          setApple(generateRandomApple()); // 새로운 사과 생성
-          return [newHead, ...prevSnake]; // 사과 먹었으면 꼬리 자르지 않음
+          setApple(generateRandomApple());
+          return [newHead, ...prevSnake];
         } else {
-          return [newHead, ...prevSnake.slice(0, -1)]; // 일반 이동 (꼬리 자름)
+          return [newHead, ...prevSnake.slice(0, -1)];
         }
       });
     }, 400);
 
     return () => clearInterval(interval);
   }, [direction, apple]);
+
+  useEffect(() => {
+    if (gameOverFlag) {
+      onGameOver();
+    }
+  }, [gameOverFlag]);
 
   return (
     <Board>
