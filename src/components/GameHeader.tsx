@@ -1,10 +1,15 @@
 import React from 'react';
+
 import styled from 'styled-components/native';
 
-const GameHeader = () => {
+interface GameHeaderProps {
+  round: number;
+}
+
+const GameHeader = ({ round }: GameHeaderProps) => {
   return (
     <Container>
-      <HeaderText>Round: 1</HeaderText>
+      <HeaderText>Round: {round}</HeaderText>
       <HeaderText>Score: 0</HeaderText>
       <HeaderText>Time: 00:00</HeaderText>
     </Container>

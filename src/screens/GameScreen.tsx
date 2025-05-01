@@ -2,18 +2,20 @@ import React, { useState } from 'react';
 
 import styled from 'styled-components/native';
 
-import FailModal from '../components/FailModal';
 import GameBody from '../components/GameBody';
 import GameHeader from '../components/GameHeader';
 import GameInput from '../components/GameInput';
+import GameOverModal from '../components/GameOverModal';
+import RoundClearModal from '../components/RoundClearModal';
 
 const GameScreen = () => {
   const [isGameOver, setIsGameOver] = useState<boolean>(false);
+  const [round, setRound] = useState<number>(0);
+  const [isRoundClear, setIsRoundClear] = useState<boolean>(false);
   const [direction, setDirection] = React.useState<
     'UP' | 'DOWN' | 'LEFT' | 'RIGHT'
   >('RIGHT');
   const [resetKey, setResetKey] = useState<number>(0);
-
   // 방향 전환 함수
   const handleDirection = (newDir: 'UP' | 'DOWN' | 'LEFT' | 'RIGHT') => {
     if (
@@ -25,24 +27,35 @@ const GameScreen = () => {
       setDirection(newDir);
     }
   };
-
   // 게임 재시작 함수
   const retryGame = () => {
     setIsGameOver(false);
     setDirection('RIGHT');
     setResetKey((prev) => prev + 1);
   };
+  // 라운드 클리어 함수
+  const handleRoundClear = () => {
+    setIsRoundClear(true);
+    setTimeout(() => {
+      setIsRoundClear(false);
+      setRound((prev) => prev + 1);
+      setResetKey((prev) => prev + 1);
+    }, 3000);
+  };
 
   return (
     <Container>
-      <GameHeader />
+      <GameHeader round={round} />
       <GameBody
         key={resetKey}
-        onGameOver={() => setIsGameOver(true)}
+        round={round}
         direction={direction}
+        onNextRound={handleRoundClear}
+        onGameOver={() => setIsGameOver(true)}
       />
       <GameInput onSwipe={handleDirection} />
-      <FailModal onRetry={retryGame} isOpen={isGameOver} />
+      <RoundClearModal isOpen={isRoundClear} />
+      <GameOverModal isOpen={isGameOver} onRetry={retryGame} />
     </Container>
   );
 };
@@ -50,11 +63,6 @@ const Container = styled.View`
   flex: 1;
   justify-content: center;
   align-items: center;
-`;
-
-const Text = styled.Text`
-  font-size: 24px;
-  color: #000;
 `;
 
 export default GameScreen;

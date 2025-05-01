@@ -12,13 +12,22 @@ const generateRandomApple = (): [number, number] => {
 };
 
 interface GameBodyProps {
-  onGameOver: () => void;
+  round: number;
   direction: 'UP' | 'DOWN' | 'LEFT' | 'RIGHT';
+  onNextRound: () => void;
+  onGameOver: () => void;
 }
 
-const GameBody = ({ onGameOver, direction }: GameBodyProps) => {
+const GameBody = ({
+  round,
+  onNextRound,
+  onGameOver,
+  direction,
+}: GameBodyProps) => {
   const [snake, setSnake] = useState<[number, number][]>([[5, 5]]);
-  const [apple, setApple] = useState<[number, number]>(generateRandomApple());
+  const [apple, setApple] = useState<[number, number][]>([
+    generateRandomApple(),
+  ]);
   const [gameOverFlag, setGameOverFlag] = useState<boolean>(false);
 
   const checkCollision = (head: [number, number]) => {
@@ -48,7 +57,7 @@ const GameBody = ({ onGameOver, direction }: GameBodyProps) => {
       setSnake((prevSnake) => {
         const [headX, headY] = prevSnake[0];
         let newHead: [number, number] = [headX, headY];
-
+        // 방향에 따라 머리 위치 업데이트
         switch (direction) {
           case 'UP':
             newHead = [headX, headY - 1];
@@ -63,16 +72,18 @@ const GameBody = ({ onGameOver, direction }: GameBodyProps) => {
             newHead = [headX + 1, headY];
             break;
         }
-
         if (checkCollision(newHead)) {
           clearInterval(interval);
           return prevSnake;
         }
-
-        const ateApple = newHead[0] === apple[0] && newHead[1] === apple[1];
-
+        // 사과를 먹었는지 체크
+        const ateApple = apple.some(
+          ([x, y]) => x === newHead[0] && y === newHead[1],
+        );
         if (ateApple) {
-          setApple(generateRandomApple());
+          setApple((prev) =>
+            prev.filter(([x, y]) => !(x === newHead[0] && y === newHead[1])),
+          );
           return [newHead, ...prevSnake];
         } else {
           return [newHead, ...prevSnake.slice(0, -1)];
@@ -82,6 +93,12 @@ const GameBody = ({ onGameOver, direction }: GameBodyProps) => {
 
     return () => clearInterval(interval);
   }, [direction, apple]);
+
+  useEffect(() => {
+    if (apple.length === 0) {
+      onNextRound();
+    }
+  }, [apple]);
 
   useEffect(() => {
     if (gameOverFlag) {
@@ -97,7 +114,9 @@ const GameBody = ({ onGameOver, direction }: GameBodyProps) => {
             const isSnake = snake.some(
               ([x, y]) => x === colIndex && y === rowIndex,
             );
-            const isApple = apple[0] === colIndex && apple[1] === rowIndex;
+            const isApple = apple.some(
+              ([x, y]) => x === colIndex && y === rowIndex,
+            );
 
             return (
               <Cell key={colIndex} $isSnake={isSnake} $isApple={isApple} />

@@ -8,12 +8,12 @@ import styled from 'styled-components/native';
 import { RootStackParamList } from '../types/navigation';
 import CustomButton from './common/CustomButton';
 
-interface FailModalProps {
+interface GameOverModalProps {
   isOpen: boolean;
   onRetry: () => void;
 }
 
-const FailModal = ({ isOpen, onRetry }: FailModalProps) => {
+const GameOverModal = ({ isOpen, onRetry }: GameOverModalProps) => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList, 'Home'>>();
   return (
@@ -24,4 +24,4 @@ const FailModal = ({ isOpen, onRetry }: FailModalProps) => {
   );
 };
 
-export default FailModal;
+export default GameOverModal;
