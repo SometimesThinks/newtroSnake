@@ -11,6 +11,7 @@ import RoundClearModal from '../components/RoundClearModal';
 const GameScreen = () => {
   const [isGameOver, setIsGameOver] = useState<boolean>(false);
   const [round, setRound] = useState<number>(0);
+  const [score, setScore] = useState<number>(0);
   const [isRoundClear, setIsRoundClear] = useState<boolean>(false);
   const [direction, setDirection] = React.useState<
     'UP' | 'DOWN' | 'LEFT' | 'RIGHT'
@@ -45,7 +46,7 @@ const GameScreen = () => {
 
   return (
     <Container>
-      <GameHeader round={round} />
+      <GameHeader round={round} score={score} />
       <GameBody
         key={resetKey}
         round={round}

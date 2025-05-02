@@ -1,10 +1,13 @@
 import React from 'react';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import styled from 'styled-components/native';
-import HomeScreen from './src/screens/HomeScreen';
+
 import GameScreen from './src/screens/GameScreen';
+import HomeScreen from './src/screens/HomeScreen';
 import SettingScreen from './src/screens/SettingScreen';
 
 const Stack = createNativeStackNavigator();
@@ -12,23 +15,21 @@ const Stack = createNativeStackNavigator();
 function App(): React.JSX.Element {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <NavigationContainer>
-        <Stack.Navigator
-          initialRouteName='Home'
-          screenOptions={{
-            headerShown: false,
-          }}>
-          <Stack.Screen name='Home' component={HomeScreen} />
-          <Stack.Screen name='Game' component={GameScreen} />
-          <Stack.Screen name='Setting' component={SettingScreen} />
-        </Stack.Navigator>
-      </NavigationContainer>
+      <SafeAreaProvider>
+        <NavigationContainer>
+          <Stack.Navigator
+            initialRouteName='Home'
+            screenOptions={{
+              headerShown: false,
+            }}>
+            <Stack.Screen name='Home' component={HomeScreen} />
+            <Stack.Screen name='Game' component={GameScreen} />
+            <Stack.Screen name='Setting' component={SettingScreen} />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </SafeAreaProvider>
     </GestureHandlerRootView>
   );
 }
-
-const Container = styled.SafeAreaView`
-  flex: 1;
-`;
 
 export default App;
