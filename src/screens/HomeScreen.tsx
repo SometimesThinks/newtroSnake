@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import styled from 'styled-components/native';
 
+import CityPopDayBackground from '../../layouts/CityPopDayBackground';
 import GameTitle from '../components/GameTitle';
 import CustomButton from '../components/common/CustomButton';
 import ScreenContainer from '../components/common/ScreenContainer';
@@ -13,7 +14,7 @@ const HomeScreen = () => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList, 'Home'>>();
   return (
-    <ScreenContainer>
+    <CityPopDayBackground>
       <GameTitle />
       <ButtonBox>
         <CustomButton
@@ -25,15 +26,15 @@ const HomeScreen = () => {
           onPress={() => navigation.navigate('Setting')}
         />
       </ButtonBox>
-    </ScreenContainer>
+    </CityPopDayBackground>
   );
 };
 
 const ButtonBox = styled.View`
-  flex: 2;
-  border: 1px solid black;
-  justify-content: start;
+  flex: 5;
   align-items: center;
+  justify-content: center;
+  gap: 20px;
 `;
 
 export default HomeScreen;

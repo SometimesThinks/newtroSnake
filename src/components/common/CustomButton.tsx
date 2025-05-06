@@ -2,6 +2,8 @@ import React from 'react';
 
 import styled from 'styled-components/native';
 
+import CustomText from './CustomText';
+
 interface CustomBtnProps {
   title: string;
   onPress: () => void;
@@ -17,16 +19,14 @@ const CustomButton = ({ title, onPress }: CustomBtnProps) => {
 
 const Container = styled.Pressable`
   width: 80%;
-  height: 50px;
-  background-color: #007bff;
-  margin-bottom: 20px;
+  background-color: #fefefe;
+  border-radius: 10px;
 `;
 
-const Title = styled.Text`
-  color: white;
-  font-size: 16px;
+const Title = styled(CustomText)`
+  font-size: 40px;
   text-align: center;
-  line-height: 50px;
+  color: #2d2d2d;
 `;
 
 export default CustomButton;
