@@ -19,7 +19,7 @@ const Container = styled.View`
 `;
 
 const TitleText = styled(CustomText)`
-  font-size: 50px;
+  font-size: 60px;
   color: #2d2d2d;
 `;
 
