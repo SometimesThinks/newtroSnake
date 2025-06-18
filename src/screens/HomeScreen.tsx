@@ -14,6 +14,7 @@ const HomeScreen = () => {
     useNavigation<NativeStackNavigationProp<RootStackParamList, 'Home'>>();
   return (
     <CityPopNightBackground>
+      <></>
       <GameTitle />
       <ButtonBox>
         <CustomButton

@@ -60,6 +60,7 @@ const GameScreen = () => {
     </Container>
   );
 };
+
 const Container = styled.View`
   flex: 1;
   justify-content: center;

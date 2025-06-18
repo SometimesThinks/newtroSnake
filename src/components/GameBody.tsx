@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components/native';
 
 const BOARD_WIDTH = 20;
-const BOARD_HEIGHT = 40;
+const BOARD_HEIGHT = 35;
 const generateRandomApple = (): [number, number] => {
   return [
     Math.floor(Math.random() * BOARD_WIDTH),
@@ -117,7 +117,6 @@ const GameBody = ({
             const isApple = apple.some(
               ([x, y]) => x === colIndex && y === rowIndex,
             );
-
             return (
               <Cell key={colIndex} $isSnake={isSnake} $isApple={isApple} />
             );
@@ -137,8 +136,7 @@ const Row = styled.View`
 `;
 
 const Cell = styled.View<{ $isSnake: boolean; $isApple?: boolean }>`
-  width: 12px;
-  height: 12px;
+  flex: 1;
   margin: 1px;
   background-color: ${({ $isSnake, $isApple }) =>
     $isApple ? 'red' : $isSnake ? '#333' : '#fff'};

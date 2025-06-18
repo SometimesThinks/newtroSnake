@@ -19,8 +19,8 @@ const Container = styled.View`
 `;
 
 const TitleText = styled(CustomText)`
-  font-size: 60px;
-  color: #2d2d2d;
+  font-size: 68px;
+  color: #00cfff;
 `;
 
 export default GameTitle;

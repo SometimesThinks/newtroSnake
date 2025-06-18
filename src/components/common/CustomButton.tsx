@@ -19,14 +19,15 @@ const CustomButton = ({ title, onPress }: CustomBtnProps) => {
 
 const Container = styled.Pressable`
   width: 80%;
-  background-color: #fefefe;
+  background-color: #112244;
+  border: 2px solid #00cfff;
   border-radius: 10px;
 `;
 
 const Title = styled(CustomText)`
-  font-size: 40px;
   text-align: center;
-  color: #2d2d2d;
+  font-size: 48px;
+  color: #00cfff;
 `;
 
 export default CustomButton;
