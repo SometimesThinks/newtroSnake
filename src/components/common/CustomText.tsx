@@ -17,7 +17,6 @@ const CustomText = ({ children, style, ...rest }: CustomTextProps) => {
 
 const StyledText = styled.Text`
   font-family: 'ZenTokyoZoo-Regular';
-  text-align: center;
   text-shadow: 0px 0px 8px #00f0ff;
 `;
 

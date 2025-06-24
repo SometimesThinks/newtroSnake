@@ -4,7 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import styled from 'styled-components/native';
 
-import CityPopNightBackground from '../../layouts/CityPopNightBackground';
+import HomeLayout from '../../layouts/HomeLayout';
 import GameTitle from '../components/GameTitle';
 import CustomButton from '../components/common/CustomButton';
 import { RootStackParamList } from '../types/navigation';
@@ -13,8 +13,7 @@ const HomeScreen = () => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList, 'Home'>>();
   return (
-    <CityPopNightBackground>
-      <></>
+    <HomeLayout>
       <GameTitle />
       <ButtonBox>
         <CustomButton
@@ -26,7 +25,7 @@ const HomeScreen = () => {
           onPress={() => navigation.navigate('Setting')}
         />
       </ButtonBox>
-    </CityPopNightBackground>
+    </HomeLayout>
   );
 };
 

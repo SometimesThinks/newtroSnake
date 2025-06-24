@@ -2,6 +2,8 @@ import React from 'react';
 
 import styled from 'styled-components/native';
 
+import CustomText from './common/CustomText';
+
 interface GameHeaderProps {
   round: number;
   score: number;
@@ -10,8 +12,22 @@ interface GameHeaderProps {
 const GameHeader = ({ round, score }: GameHeaderProps) => {
   return (
     <Container>
-      <HeaderText>Round: {round}</HeaderText>
-      <HeaderText>Score: {score}</HeaderText>
+      <Row>
+        <LabelBox>
+          <LabelText>ROUND</LabelText>
+        </LabelBox>
+        <LabelBox>
+          <LabelText>SCORE</LabelText>
+        </LabelBox>
+      </Row>
+      <Row>
+        <LabelBox>
+          <ScoreText>{round}</ScoreText>
+        </LabelBox>
+        <LabelBox>
+          <ScoreText>{score}</ScoreText>
+        </LabelBox>
+      </Row>
     </Container>
   );
 };
@@ -20,8 +36,23 @@ const Container = styled.View`
   width: 100%;
 `;
 
-const HeaderText = styled.Text`
-  font-size: 12px;
+const Row = styled.View`
+  flex-direction: row;
+`;
+
+const LabelBox = styled.View`
+  flex: 1;
+  align-items: center;
+`;
+
+const LabelText = styled(CustomText)`
+  font-size: 32px;
+  color: ${({ theme }) => theme.colors.text};
+`;
+
+const ScoreText = styled(CustomText)`
+  font-size: 48px;
+  color: ${({ theme }) => theme.colors.text};
 `;
 
 export default GameHeader;

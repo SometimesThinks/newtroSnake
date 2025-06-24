@@ -1,9 +1,14 @@
 import React, { useEffect, useState } from 'react';
+import { Dimensions } from 'react-native';
 
 import styled from 'styled-components/native';
 
+const SCREEN_WIDTH = Dimensions.get('window').width;
+const SCREEN_HEIGHT = Dimensions.get('window').height;
 const BOARD_WIDTH = 20;
 const BOARD_HEIGHT = 35;
+const CELL_SIZE = SCREEN_WIDTH / BOARD_WIDTH;
+
 const generateRandomApple = (): [number, number] => {
   return [
     Math.floor(Math.random() * BOARD_WIDTH),
@@ -129,6 +134,7 @@ const GameBody = ({
 
 const Board = styled.View`
   flex: 1;
+  background-color: ${({ theme }) => theme.colors.surface};
 `;
 
 const Row = styled.View`
@@ -136,10 +142,14 @@ const Row = styled.View`
 `;
 
 const Cell = styled.View<{ $isSnake: boolean; $isApple?: boolean }>`
-  flex: 1;
-  margin: 1px;
-  background-color: ${({ $isSnake, $isApple }) =>
-    $isApple ? 'red' : $isSnake ? '#333' : '#fff'};
+  width: ${CELL_SIZE}px;
+  height: ${CELL_SIZE}px;
+  background-color: ${({ $isSnake, $isApple, theme }) =>
+    $isApple
+      ? 'red'
+      : $isSnake
+        ? theme.colors.surface
+        : theme.colors.background};
   border-radius: 2px;
 `;
 

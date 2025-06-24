@@ -19,6 +19,7 @@ const Container = styled.View`
 `;
 
 const TitleText = styled(CustomText)`
+  text-align: center;
   font-size: 68px;
   color: #00cfff;
 `;

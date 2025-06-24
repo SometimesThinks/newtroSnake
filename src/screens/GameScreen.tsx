@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 
 import styled from 'styled-components/native';
 
+import GameLayout from '../../layouts/GameLayout';
 import GameBody from '../components/GameBody';
 import GameHeader from '../components/GameHeader';
 import GameInput from '../components/GameInput';
@@ -45,19 +46,21 @@ const GameScreen = () => {
   };
 
   return (
-    <Container>
-      <GameHeader round={round} score={score} />
-      <GameBody
-        key={resetKey}
-        round={round}
-        direction={direction}
-        onNextRound={handleRoundClear}
-        onGameOver={() => setIsGameOver(true)}
-      />
-      <GameInput onSwipe={handleDirection} />
-      <RoundClearModal isOpen={isRoundClear} />
-      <GameOverModal isOpen={isGameOver} onRetry={retryGame} />
-    </Container>
+    <GameLayout>
+      <Container>
+        <GameHeader round={round} score={score} />
+        <GameBody
+          key={resetKey}
+          round={round}
+          direction={direction}
+          onNextRound={handleRoundClear}
+          onGameOver={() => setIsGameOver(true)}
+        />
+        <GameInput onSwipe={handleDirection} />
+        <RoundClearModal isOpen={isRoundClear} />
+        {/* <GameOverModal isOpen={isGameOver} onRetry={retryGame} /> */}
+      </Container>
+    </GameLayout>
   );
 };
 

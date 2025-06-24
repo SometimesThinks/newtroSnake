@@ -1,10 +1,11 @@
 import React from 'react';
-import styled from 'styled-components/native';
 import {
-  GestureDetector,
-  Gesture,
   Directions,
+  Gesture,
+  GestureDetector,
 } from 'react-native-gesture-handler';
+
+import styled from 'styled-components/native';
 
 interface GameInputProps {
   onSwipe: (direction: 'UP' | 'DOWN' | 'LEFT' | 'RIGHT') => void;

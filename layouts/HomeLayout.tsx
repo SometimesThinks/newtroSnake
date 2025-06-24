@@ -1,61 +1,47 @@
 import React from 'react';
 import { Dimensions } from 'react-native';
 
-import styled from 'styled-components/native';
+import styled, { useTheme } from 'styled-components/native';
 
 import ScreenContainer from '../src/components/common/ScreenContainer';
+import { getRandomColor } from '../src/utils/color';
+import { StarDot } from '../styles/layout';
 
-interface CityPopNightBackgroundProps {
+interface HomeLayoutProps {
   children: React.ReactNode;
 }
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
-const STAR_COLORS = [
-  '#FFFFFF',
-  '#00F0FF',
-  '#FF77FF',
-  '#C7AFFF',
-  '#B0A8FF',
-  '#AAF8FF',
-];
-const WINDOW_COLORS = ['#FFD580', '#FFE9A7', '#FFC0CB', '#87CEFA'];
 const BUILDING_HEIGHTS = [45, 35, 40, 30, 50, 35, 40, 45, 25, 50];
 
-const getRandomWindowColor = () =>
-  WINDOW_COLORS[Math.floor(Math.random() * WINDOW_COLORS.length)];
-
-const getRandomColor = () =>
-  STAR_COLORS[Math.floor(Math.random() * STAR_COLORS.length)];
-
-const BUILDINGS = BUILDING_HEIGHTS.map((height) => {
-  const floorCount = Math.floor(height / 5);
-  const windows: { lit: boolean; color?: string }[][] = [];
-  for (let i = 0; i < floorCount; i++) {
-    const floorWindows = [
-      Math.random() > 0.5
-        ? { lit: true, color: getRandomWindowColor() }
-        : { lit: false },
-      Math.random() > 0.5
-        ? { lit: true, color: getRandomWindowColor() }
-        : { lit: false },
-    ];
-    windows.push(floorWindows);
-  }
-  return { height, windows };
-});
-
-const generateStars = (count: number) =>
-  Array.from({ length: count }, (_, i) => ({
-    id: i,
-    top: Math.random() * (SCREEN_HEIGHT * 0.5),
-    left: Math.random() * SCREEN_WIDTH,
-    size: Math.random() * 2 + 1.2,
-    opacity: Math.random() * 0.4 + 0.3,
-    color: getRandomColor(),
-  }));
-
-const CityPopNightBackground = ({ children }: CityPopNightBackgroundProps) => {
+const HomeLayout = ({ children }: HomeLayoutProps) => {
+  const { windowColors, starColors } = useTheme();
+  const generateStars = (count: number) =>
+    Array.from({ length: count }, (_, i) => ({
+      id: i,
+      top: Math.random() * (SCREEN_HEIGHT * 0.5),
+      left: Math.random() * SCREEN_WIDTH,
+      size: Math.random() * 2 + 1.2,
+      opacity: Math.random() * 0.4 + 0.3,
+      color: getRandomColor(starColors),
+    }));
   const stars = generateStars(80);
+  const buildings = BUILDING_HEIGHTS.map((height) => {
+    const floorCount = Math.floor(height / 5);
+    const windows: { lit: boolean; color?: string }[][] = [];
+    for (let i = 0; i < floorCount; i++) {
+      const floorWindows = [
+        Math.random() > 0.5
+          ? { lit: true, color: getRandomColor(windowColors) }
+          : { lit: false },
+        Math.random() > 0.5
+          ? { lit: true, color: getRandomColor(windowColors) }
+          : { lit: false },
+      ];
+      windows.push(floorWindows);
+    }
+    return { height, windows };
+  });
 
   return (
     <ScreenContainer>
@@ -71,7 +57,7 @@ const CityPopNightBackground = ({ children }: CityPopNightBackgroundProps) => {
       ))}
       <NightBackground>
         <Sky>
-          {BUILDINGS.map((building, index) => (
+          {buildings.map((building, index) => (
             <Building key={index} height={building.height}>
               {building.windows.map((floor, floorIndex) => (
                 <Floor key={floorIndex}>
@@ -92,14 +78,6 @@ const CityPopNightBackground = ({ children }: CityPopNightBackgroundProps) => {
     </ScreenContainer>
   );
 };
-
-interface StarDotProps {
-  top: number;
-  left: number;
-  size: number;
-  opacity: number;
-  color: string;
-}
 
 interface BuildingProps {
   height: number;
@@ -128,20 +106,6 @@ const Sky = styled.View`
   background-color: #0b0c38;
 `;
 
-const StarDot = styled.View<StarDotProps>(
-  ({ top, left, size, color, opacity }: StarDotProps) => ({
-    position: 'absolute',
-    zIndex: 1,
-    top,
-    left,
-    width: size,
-    height: size,
-    backgroundColor: color,
-    opacity,
-    borderRadius: 100,
-  }),
-);
-
 const Building = styled.View<BuildingProps>((props: BuildingProps) => ({
   flex: 1,
   height: `${props.height}%`,
@@ -165,4 +129,4 @@ const WindowDot = styled.View<WindowDotProps>(
   }),
 );
 
-export default CityPopNightBackground;
+export default HomeLayout;

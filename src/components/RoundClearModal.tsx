@@ -3,6 +3,8 @@ import { Modal, Text } from 'react-native';
 
 import styled from 'styled-components/native';
 
+import CustomText from './common/CustomText';
+
 interface RoundClearModalProps {
   isOpen: boolean;
 }
@@ -11,7 +13,7 @@ const RoundClearModal = ({ isOpen }: RoundClearModalProps) => {
   return (
     <Modal visible={isOpen} transparent={true}>
       <Container>
-        <Text>CLEAR!</Text>
+        <CustomText>CLEAR</CustomText>
       </Container>
     </Modal>
   );

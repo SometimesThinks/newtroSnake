@@ -18,10 +18,21 @@ const GameOverModal = ({ isOpen, onRetry }: GameOverModalProps) => {
     useNavigation<NativeStackNavigationProp<RootStackParamList, 'Home'>>();
   return (
     <Modal visible={isOpen} transparent={true}>
-      <CustomButton onPress={onRetry} title='RETRY' />
-      <CustomButton onPress={() => navigation.navigate('Home')} title='HOME' />
+      <Container>
+        <CustomButton onPress={onRetry} title='RETRY' />
+        <CustomButton
+          onPress={() => navigation.navigate('Home')}
+          title='HOME'
+        />
+      </Container>
     </Modal>
   );
 };
+
+const Container = styled.View`
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+`;
 
 export default GameOverModal;
