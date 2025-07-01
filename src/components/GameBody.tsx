@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Dimensions } from 'react-native';
 
-import styled from 'styled-components/native';
+import styled, { useTheme } from 'styled-components/native';
+
+import { getRandomColor } from '../utils/color';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
@@ -21,6 +23,10 @@ interface GameBodyProps {
   direction: 'UP' | 'DOWN' | 'LEFT' | 'RIGHT';
   onNextRound: () => void;
   onGameOver: () => void;
+  snakeColor: string; // ✅ snakeColor prop 추가
+  appleColor: string; // ✅ appleColor prop 추가
+  onEatColoredApple: (color: string) => void; // ✅ 사과 색 전달 시 뱀 색 변경 함수
+  onChangeAppleColor: () => void; // ✅ 사과 색 변경 함수
 }
 
 const GameBody = ({
@@ -28,11 +34,16 @@ const GameBody = ({
   onNextRound,
   onGameOver,
   direction,
+  snakeColor, // ✅ snakeColor prop 추가
+  appleColor, // ✅ appleColor prop 추가
+  onEatColoredApple, // ✅ 사과 색 전달 시 뱀 색 변경 함수
+  onChangeAppleColor, // ✅ 사과 색 변경 함수
 }: GameBodyProps) => {
+  const { starColors } = useTheme(); // ✅ 테마에서 색상 가져오기
+
   const [snake, setSnake] = useState<[number, number][]>([[5, 5]]);
-  const [apple, setApple] = useState<[number, number][]>([
-    generateRandomApple(),
-  ]);
+  const [apple, setApple] = useState<[number, number]>(generateRandomApple()); // ✅ 단일 사과로 변경
+  const [appleEaten, setAppleEaten] = useState<boolean>(false); // ✅ setState 렌더 중 호출 방지용
   const [gameOverFlag, setGameOverFlag] = useState<boolean>(false);
 
   const checkCollision = (head: [number, number]) => {
@@ -82,14 +93,13 @@ const GameBody = ({
           return prevSnake;
         }
         // 사과를 먹었는지 체크
-        const ateApple = apple.some(
-          ([x, y]) => x === newHead[0] && y === newHead[1],
-        );
+        const ateApple = newHead[0] === apple[0] && newHead[1] === apple[1];
+
         if (ateApple) {
-          setApple((prev) =>
-            prev.filter(([x, y]) => !(x === newHead[0] && y === newHead[1])),
-          );
-          return [newHead, ...prevSnake];
+          setApple(generateRandomApple()); // ✅ 새로운 사과 위치 지정setAppleEaten(true);
+          setAppleEaten(true); // ✅ 렌더 후 실행되도록 상태만 변경
+          onChangeAppleColor(); // ✅ 사과 색 변경
+          return [newHead, ...prevSnake]; // ✅ 몸 길이 증가
         } else {
           return [newHead, ...prevSnake.slice(0, -1)];
         }
@@ -100,10 +110,11 @@ const GameBody = ({
   }, [direction, apple]);
 
   useEffect(() => {
-    if (apple.length === 0) {
-      onNextRound();
+    if (appleEaten) {
+      onEatColoredApple(appleColor); // ✅ 렌더 이후 안전하게 부모 setState 실행
+      setAppleEaten(false);
     }
-  }, [apple]);
+  }, [appleEaten]);
 
   useEffect(() => {
     if (gameOverFlag) {
@@ -119,11 +130,15 @@ const GameBody = ({
             const isSnake = snake.some(
               ([x, y]) => x === colIndex && y === rowIndex,
             );
-            const isApple = apple.some(
-              ([x, y]) => x === colIndex && y === rowIndex,
-            );
+            const isApple = apple[0] === colIndex && apple[1] === rowIndex;
             return (
-              <Cell key={colIndex} $isSnake={isSnake} $isApple={isApple} />
+              <Cell
+                key={colIndex}
+                $isSnake={isSnake}
+                $isApple={isApple}
+                snakeColor={snakeColor} // ✅ 뱀 색상 반영
+                appleColor={appleColor}
+              /> // ✅ 사과 색상 반영/>
             );
           })}
         </Row>
@@ -141,15 +156,22 @@ const Row = styled.View`
   flex-direction: row;
 `;
 
-const Cell = styled.View<{ $isSnake: boolean; $isApple?: boolean }>`
+const Cell = styled.View<{
+  $isSnake: boolean;
+  $isApple?: boolean;
+  snakeColor: string;
+  appleColor: string;
+}>`
   width: ${CELL_SIZE}px;
   height: ${CELL_SIZE}px;
-  background-color: ${({ $isSnake, $isApple, theme }) =>
-    $isApple
-      ? 'red'
-      : $isSnake
-        ? theme.colors.surface
-        : theme.colors.background};
+  background-color: ${({
+    $isApple,
+    $isSnake,
+    snakeColor,
+    appleColor,
+    theme,
+  }) =>
+    $isApple ? appleColor : $isSnake ? snakeColor : theme.colors.background};
   border-radius: 2px;
 `;
 

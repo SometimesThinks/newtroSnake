@@ -12,20 +12,19 @@ interface HomeLayoutProps {
 }
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
+const STAR_NUMBER = 80;
 const BUILDING_HEIGHTS = [45, 35, 40, 30, 50, 35, 40, 45, 25, 50];
 
 const HomeLayout = ({ children }: HomeLayoutProps) => {
   const { windowColors, starColors } = useTheme();
-  const generateStars = (count: number) =>
-    Array.from({ length: count }, (_, i) => ({
-      id: i,
-      top: Math.random() * (SCREEN_HEIGHT * 0.5),
-      left: Math.random() * SCREEN_WIDTH,
-      size: Math.random() * 2 + 1.2,
-      opacity: Math.random() * 0.4 + 0.3,
-      color: getRandomColor(starColors),
-    }));
-  const stars = generateStars(80);
+  const stars = Array.from({ length: STAR_NUMBER }, (_, i) => ({
+    id: i,
+    top: Math.random() * (SCREEN_HEIGHT * 0.5),
+    left: Math.random() * SCREEN_WIDTH,
+    size: Math.random() * 2 + 1.2,
+    opacity: Math.random() * 0.4 + 0.3,
+    color: getRandomColor(starColors),
+  }));
   const buildings = BUILDING_HEIGHTS.map((height) => {
     const floorCount = Math.floor(height / 5);
     const windows: { lit: boolean; color?: string }[][] = [];
