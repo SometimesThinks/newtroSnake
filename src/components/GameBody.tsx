@@ -96,9 +96,7 @@ const GameBody = ({
         const ateApple = newHead[0] === apple[0] && newHead[1] === apple[1];
 
         if (ateApple) {
-          setApple(generateRandomApple()); // ✅ 새로운 사과 위치 지정setAppleEaten(true);
           setAppleEaten(true); // ✅ 렌더 후 실행되도록 상태만 변경
-          onChangeAppleColor(); // ✅ 사과 색 변경
           return [newHead, ...prevSnake]; // ✅ 몸 길이 증가
         } else {
           return [newHead, ...prevSnake.slice(0, -1)];
@@ -111,7 +109,9 @@ const GameBody = ({
 
   useEffect(() => {
     if (appleEaten) {
-      onEatColoredApple(appleColor); // ✅ 렌더 이후 안전하게 부모 setState 실행
+      setApple(generateRandomApple());
+      onChangeAppleColor();
+      onEatColoredApple(appleColor);
       setAppleEaten(false);
     }
   }, [appleEaten]);
