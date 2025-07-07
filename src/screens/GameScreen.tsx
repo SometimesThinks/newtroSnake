@@ -82,7 +82,7 @@ const GameScreen = () => {
         />
         <GameInput onSwipe={handleDirection} />
         <RoundClearModal isOpen={isRoundClear} />
-        <GameOverModal isOpen={isGameOver} onRetry={retryGame} />
+        <GameOverModal isOpen={isGameOver} onRetry={retryGame} score={score} />
       </Container>
     </GameLayout>
   );

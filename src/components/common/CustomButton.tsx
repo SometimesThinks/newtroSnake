@@ -27,7 +27,7 @@ const Container = styled.Pressable`
 const Title = styled(CustomText)`
   text-align: center;
   font-size: 48px;
-  color: #00cfff;
+  color: ${({ theme }) => theme.colors.text};
 `;
 
 export default CustomButton;
