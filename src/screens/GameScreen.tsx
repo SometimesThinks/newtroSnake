@@ -38,13 +38,19 @@ const GameScreen = () => {
       setDirection(newDir);
     }
   };
-  // 게임 재시작 함수
+  // 스코어 업데이트 함수 추가
+  const handleScoreUpdate = () => {
+    setScore((prev) => prev + 1);
+  };
+  // 게임 재시작 함수 수정
   const retryGame = () => {
     setIsGameOver(false);
+    setScore(0); // 스코어 리셋 추가
+    setRound(0); // 라운드 리셋 추가
     setDirection('RIGHT');
     setResetKey((prev) => prev + 1);
-    setSnakeColor(getRandomColor(starColors)); // ✅ 재시작 시 뱀 색상 리셋
-    setAppleColor(getRandomColor(starColors)); // ✅ 재시작 시 사과 색상 리셋
+    setSnakeColor(getRandomColor(starColors));
+    setAppleColor(getRandomColor(starColors));
   };
   // 라운드 클리어 함수
   const handleRoundClear = () => {
@@ -68,14 +74,15 @@ const GameScreen = () => {
           direction={direction}
           onNextRound={handleRoundClear}
           onGameOver={() => setIsGameOver(true)}
-          snakeColor={snakeColor} // ✅ snakeColor prop 전달
-          appleColor={appleColor} // ✅ appleColor prop 전달
-          onEatColoredApple={(color) => setSnakeColor(color)} // ✅ 사과 색 전달 시 뱀 색 변경
+          snakeColor={snakeColor}
+          appleColor={appleColor}
+          onEatColoredApple={(color) => setSnakeColor(color)}
           onChangeAppleColor={() => setAppleColor(getRandomColor(starColors))}
+          onScoreUpdate={handleScoreUpdate} // ✅ 스코어 업데이트 콜백 추가
         />
         <GameInput onSwipe={handleDirection} />
         <RoundClearModal isOpen={isRoundClear} />
-        {/* <GameOverModal isOpen={isGameOver} onRetry={retryGame} /> */}
+        <GameOverModal isOpen={isGameOver} onRetry={retryGame} />
       </Container>
     </GameLayout>
   );

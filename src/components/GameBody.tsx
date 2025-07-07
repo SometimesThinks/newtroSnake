@@ -27,6 +27,7 @@ interface GameBodyProps {
   appleColor: string; // ✅ appleColor prop 추가
   onEatColoredApple: (color: string) => void; // ✅ 사과 색 전달 시 뱀 색 변경 함수
   onChangeAppleColor: () => void; // ✅ 사과 색 변경 함수
+  onScoreUpdate: () => void; // ✅ 스코어 업데이트 콜백 추가
 }
 
 const GameBody = ({
@@ -38,9 +39,8 @@ const GameBody = ({
   appleColor, // ✅ appleColor prop 추가
   onEatColoredApple, // ✅ 사과 색 전달 시 뱀 색 변경 함수
   onChangeAppleColor, // ✅ 사과 색 변경 함수
+  onScoreUpdate, // ✅ 스코어 업데이트 콜백 추가
 }: GameBodyProps) => {
-  const { starColors } = useTheme(); // ✅ 테마에서 색상 가져오기
-
   const [snake, setSnake] = useState<[number, number][]>([[5, 5]]);
   const [apple, setApple] = useState<[number, number]>(generateRandomApple()); // ✅ 단일 사과로 변경
   const [appleEaten, setAppleEaten] = useState<boolean>(false); // ✅ setState 렌더 중 호출 방지용
@@ -112,6 +112,7 @@ const GameBody = ({
       setApple(generateRandomApple());
       onChangeAppleColor();
       onEatColoredApple(appleColor);
+      onScoreUpdate(); // ✅ 사과를 먹을 때 스코어 업데이트
       setAppleEaten(false);
     }
   }, [appleEaten]);
