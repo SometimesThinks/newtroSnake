@@ -62,7 +62,7 @@ const ModalBox = styled.View`
 
 const GameOverText = styled(CustomText)`
   font-size: 36px;
-  color: ${({ theme }) => theme.colors.text};
+  color: ${({ theme }: { theme: any }) => theme.colors.text};
   margin-bottom: 24px;
 `;
 
