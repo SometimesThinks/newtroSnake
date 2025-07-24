@@ -11,11 +11,42 @@ const BOARD_WIDTH = 20;
 const BOARD_HEIGHT = 35;
 const CELL_SIZE = SCREEN_WIDTH / BOARD_WIDTH;
 
-const generateRandomApple = (): [number, number] => {
-  return [
-    Math.floor(Math.random() * BOARD_WIDTH),
-    Math.floor(Math.random() * BOARD_HEIGHT),
-  ];
+// 맵 데이터 타입 정의
+interface MapData {
+  round: number;
+  apple_count: number;
+  map: number[][];
+}
+
+// 맵 데이터 import
+const mapData = require('../assets/newtro_snake_32_rounds_difficult_apples.json');
+
+const generateRandomApple = (currentMap: number[][]): [number, number] => {
+  const availablePositions: [number, number][] = [];
+
+  for (let y = 0; y < currentMap.length; y++) {
+    for (let x = 0; x < currentMap[y].length; x++) {
+      if (currentMap[y][x] === 2) {
+        // 사과 위치
+        availablePositions.push([x, y]);
+      }
+    }
+  }
+
+  if (availablePositions.length === 0) {
+    // 사과 위치가 없으면 빈 공간에서 랜덤 생성
+    for (let y = 0; y < currentMap.length; y++) {
+      for (let x = 0; x < currentMap[y].length; x++) {
+        if (currentMap[y][x] === 0) {
+          // 빈 공간
+          availablePositions.push([x, y]);
+        }
+      }
+    }
+  }
+
+  const randomIndex = Math.floor(Math.random() * availablePositions.length);
+  return availablePositions[randomIndex];
 };
 
 interface GameBodyProps {
@@ -23,11 +54,12 @@ interface GameBodyProps {
   direction: 'UP' | 'DOWN' | 'LEFT' | 'RIGHT';
   onNextRound: () => void;
   onGameOver: () => void;
-  snakeColor: string; // ✅ snakeColor prop 추가
-  appleColor: string; // ✅ appleColor prop 추가
-  onEatColoredApple: (color: string) => void; // ✅ 사과 색 전달 시 뱀 색 변경 함수
-  onChangeAppleColor: () => void; // ✅ 사과 색 변경 함수
-  onScoreUpdate: () => void; // ✅ 스코어 업데이트 콜백 추가
+  snakeColor: string;
+  appleColor: string;
+  onEatColoredApple: (color: string) => void;
+  onChangeAppleColor: () => void;
+  onScoreUpdate: () => void;
+  isPaused?: boolean; // 게임 일시정지 상태 추가
 }
 
 const GameBody = ({
@@ -35,20 +67,47 @@ const GameBody = ({
   onNextRound,
   onGameOver,
   direction,
-  snakeColor, // ✅ snakeColor prop 추가
-  appleColor, // ✅ appleColor prop 추가
-  onEatColoredApple, // ✅ 사과 색 전달 시 뱀 색 변경 함수
-  onChangeAppleColor, // ✅ 사과 색 변경 함수
-  onScoreUpdate, // ✅ 스코어 업데이트 콜백 추가
+  snakeColor,
+  appleColor,
+  onEatColoredApple,
+  onChangeAppleColor,
+  onScoreUpdate,
+  isPaused = false, // 기본값 false
 }: GameBodyProps) => {
   const [snake, setSnake] = useState<[number, number][]>([[5, 5]]);
-  const [apple, setApple] = useState<[number, number]>(generateRandomApple()); // ✅ 단일 사과로 변경
-  const [appleEaten, setAppleEaten] = useState<boolean>(false); // ✅ setState 렌더 중 호출 방지용
+  const [apple, setApple] = useState<[number, number]>([5, 5]);
+  const [appleEaten, setAppleEaten] = useState<boolean>(false);
   const [gameOverFlag, setGameOverFlag] = useState<boolean>(false);
+  const [currentMap, setCurrentMap] = useState<number[][]>([]);
+
+  // 현재 라운드의 맵 데이터 가져오기
+  useEffect(() => {
+    const roundData = mapData.rounds.find((r: MapData) => r.round === round);
+    if (roundData) {
+      setCurrentMap(roundData.map);
+      // 초기 사과 위치 설정
+      const initialApple = generateRandomApple(roundData.map);
+      setApple(initialApple);
+    }
+  }, [round]);
 
   const checkCollision = (head: [number, number]) => {
     const [headX, headY] = head;
-    // 벽과 충돌 체크
+
+    // 벽과 충돌 체크 (맵 데이터의 1값)
+    if (
+      headY >= 0 &&
+      headY < currentMap.length &&
+      headX >= 0 &&
+      headX < currentMap[headY].length
+    ) {
+      if (currentMap[headY][headX] === 1) {
+        setGameOverFlag(true);
+        return true;
+      }
+    }
+
+    // 화면 경계 체크
     if (
       headX < 0 ||
       headX >= BOARD_WIDTH ||
@@ -58,6 +117,7 @@ const GameBody = ({
       setGameOverFlag(true);
       return true;
     }
+
     // 몸통과 충돌 체크
     for (let i = 1; i < snake.length; i++) {
       if (headX === snake[i][0] && headY === snake[i][1]) {
@@ -69,10 +129,16 @@ const GameBody = ({
   };
 
   useEffect(() => {
+    // 게임이 일시정지 상태면 interval을 실행하지 않음
+    if (isPaused) {
+      return;
+    }
+
     const interval = setInterval(() => {
       setSnake((prevSnake) => {
         const [headX, headY] = prevSnake[0];
         let newHead: [number, number] = [headX, headY];
+
         // 방향에 따라 머리 위치 업데이트
         switch (direction) {
           case 'UP':
@@ -88,16 +154,18 @@ const GameBody = ({
             newHead = [headX + 1, headY];
             break;
         }
+
         if (checkCollision(newHead)) {
           clearInterval(interval);
           return prevSnake;
         }
+
         // 사과를 먹었는지 체크
         const ateApple = newHead[0] === apple[0] && newHead[1] === apple[1];
 
         if (ateApple) {
-          setAppleEaten(true); // ✅ 렌더 후 실행되도록 상태만 변경
-          return [newHead, ...prevSnake]; // ✅ 몸 길이 증가
+          setAppleEaten(true);
+          return [newHead, ...prevSnake]; // 몸 길이 증가
         } else {
           return [newHead, ...prevSnake.slice(0, -1)];
         }
@@ -105,17 +173,23 @@ const GameBody = ({
     }, 400);
 
     return () => clearInterval(interval);
-  }, [direction, apple]);
+  }, [direction, apple, currentMap, isPaused]);
 
   useEffect(() => {
+    // 게임이 일시정지 상태면 사과 재생성을 하지 않음
+    if (isPaused) {
+      return;
+    }
+
     if (appleEaten) {
-      setApple(generateRandomApple());
+      const newApple = generateRandomApple(currentMap);
+      setApple(newApple);
       onChangeAppleColor();
       onEatColoredApple(appleColor);
-      onScoreUpdate(); // ✅ 사과를 먹을 때 스코어 업데이트
+      onScoreUpdate();
       setAppleEaten(false);
     }
-  }, [appleEaten]);
+  }, [appleEaten, currentMap, isPaused]);
 
   useEffect(() => {
     if (gameOverFlag) {
@@ -132,14 +206,18 @@ const GameBody = ({
               ([x, y]) => x === colIndex && y === rowIndex,
             );
             const isApple = apple[0] === colIndex && apple[1] === rowIndex;
+            const isWall =
+              currentMap[rowIndex] && currentMap[rowIndex][colIndex] === 1;
+
             return (
               <Cell
                 key={colIndex}
                 $isSnake={isSnake}
                 $isApple={isApple}
-                snakeColor={snakeColor} // ✅ 뱀 색상 반영
+                $isWall={isWall}
+                snakeColor={snakeColor}
                 appleColor={appleColor}
-              /> // ✅ 사과 색상 반영/>
+              />
             );
           })}
         </Row>
@@ -150,7 +228,7 @@ const GameBody = ({
 
 const Board = styled.View`
   flex: 1;
-  background-color: ${({ theme }) => theme.colors.surface};
+  background-color: ${({ theme }: { theme: any }) => theme.colors.surface};
 `;
 
 const Row = styled.View`
@@ -160,6 +238,7 @@ const Row = styled.View`
 const Cell = styled.View<{
   $isSnake: boolean;
   $isApple?: boolean;
+  $isWall?: boolean;
   snakeColor: string;
   appleColor: string;
 }>`
@@ -168,11 +247,23 @@ const Cell = styled.View<{
   background-color: ${({
     $isApple,
     $isSnake,
+    $isWall,
     snakeColor,
     appleColor,
     theme,
-  }) =>
-    $isApple ? appleColor : $isSnake ? snakeColor : theme.colors.background};
+  }: {
+    $isApple?: boolean;
+    $isSnake: boolean;
+    $isWall?: boolean;
+    snakeColor: string;
+    appleColor: string;
+    theme: any;
+  }) => {
+    if ($isWall) return theme.colors.error;
+    if ($isApple) return appleColor;
+    if ($isSnake) return snakeColor;
+    return theme.colors.background;
+  }};
   border-radius: 2px;
 `;
 
